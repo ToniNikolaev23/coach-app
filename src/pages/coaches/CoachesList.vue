@@ -1,15 +1,21 @@
 <template>
   <div>
+      <base-dialog :show="!!error" title="And error accured" @close="handleError">
+        <p>{{error}}</p>
+      </base-dialog>
     <section>
         <coach-filter @change-filter="setFilters"></coach-filter>
     </section>
 
     <base-card>
       <div class="controls">
-          <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
-          <base-button link to="/register" v-if="!isCoach">Register as a coach</base-button>
+          <base-button mode="outline" @click="loadCoaches(true)">Refresh</base-button>
+          <base-button link to="/register" v-if="!isCoach && !isLoading">Register as a coach</base-button>
       </div>
-      <ul v-if="hasCoaches">
+      <div v-if="isLoading">
+          <base-spinner></base-spinner>
+      </div>
+      <ul v-else-if="hasCoaches">
           <coach-item v-for="coach in filteredCoaches"
           :key="coach.id"
           :id="coach.id"
@@ -33,6 +39,8 @@ export default {
     },
     data(){
         return {
+            isLoading: false,
+            error: null,
             activeFilters: {
                 frontend: true,
                 backend: true,
@@ -65,7 +73,7 @@ export default {
             })
         },
         hasCoaches(){
-            return this.$store.getters['coaches/hasCoaches']
+            return !this.isLoading && this.$store.getters['coaches/hasCoaches']
         },
         isCoach(){
             return this.$store.getters['coaches/isCoach']
@@ -78,10 +86,20 @@ export default {
         setFilters(updatedFilters){
             this.activeFilters = updatedFilters
         },
-        loadCoaches(){
-            this.$store.dispatch('coaches/loadCoaches');
-        }
-    }
+        async loadCoaches(refresh = false){
+            this.isLoading = true;
+            try{
+                await this.$store.dispatch('coaches/loadCoaches', {forceRefresh: refresh});
+            }catch(error){
+                this.error = error.message || 'Something went wrong!'
+            }
+           
+           this.isLoading = false
+        },
+        handleError() {
+            this.error = null
+        }   
+         }
 }
 </script>
 
