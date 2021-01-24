@@ -20,7 +20,7 @@ export default {
                   id: 'c2',
                   firstName: 'Toni',
                   lastName: 'Stoyanov',
-                  areas: ['frontend', 'career'],
+                  areas: ['frontend', 'career', 'vue'],
                   description:
                     'I am Toni and i like VueJS',
                   hourlyRate: 30
