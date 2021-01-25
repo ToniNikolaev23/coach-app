@@ -73,16 +73,18 @@ export default {
 
       try {
         if (this.mode === "login") {
-          await this.$store.dispatch("auth/login", {
+          await this.$store.dispatch("login", {
              email: this.email,
             password: this.password,
           })
         } else {
-          await this.$store.dispatch("auth/signup", {
+          await this.$store.dispatch("signup", {
             email: this.email,
             password: this.password,
           });
         }
+        const redirectUrl = '/' + (this.$route.query.redirect || 'coaches')
+        this.$router.push(redirectUrl)
       } catch (error) {
         this.error = error.message || "Failed to authenticate";
       }

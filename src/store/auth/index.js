@@ -3,12 +3,12 @@ import mutations from './mutations.js'
 import actions from './actions.js'
 
 export default {
-    namespaced:true,
     state(){
         return {
             userId: null,
             token: null,
-            tokenExpiration: null
+            tokenExpiration: null,
+            didLogout: false
         }
     },
     getters,
